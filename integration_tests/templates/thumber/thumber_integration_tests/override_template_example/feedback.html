@@ -1,0 +1,9 @@
+{% extends 'thumber/feedback.html' %}
+
+{% block before_thumber_form %}new test before form{% endblock %}
+
+{% block thumber_form_widgets %}
+  {{ thumber_form.as_p }}
+  <input type="reset" value="reset" />
+  <input type="submit" value="{{ submit_wording }}" />
+{% endblock %}

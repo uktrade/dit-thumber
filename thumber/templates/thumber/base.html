@@ -1,0 +1,10 @@
+{% extends template_name %}
+
+{% load staticfiles %}
+
+{% block extra_js %}
+  {{ block.super }}
+  <script src="{% static "javascript/thumber.js" %}"></script>
+{% endblock extra_js %}
+
+{% block thumber_feedback %}{% endblock %}

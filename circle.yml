@@ -1,0 +1,11 @@
+machine:
+  python:
+    version: 3.5.0
+
+dependencies:
+  pre:
+    - pip install 'Django>=1.9.0,<1.10'
+
+test:
+  override:
+    - ./run_tests.py
