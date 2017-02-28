@@ -32,10 +32,10 @@ class ContentFeedbackView():
         error_message = 'Sorry, something went wrong'
         first_option_yes = True
 
-        def get(self, request):
+        def get(self, request, *args, **kwargs):
             # Need to set something in the session to ensure that the user gets a session cookie
             self.request.session['thumber'] = None
-            return super().get(request)
+            return super().get(request, *args, **kwargs)
 
         def get_template_names(self):
             templates = []
@@ -78,7 +78,7 @@ class ContentFeedbackView():
 
             return context
 
-        def post(self, request):
+        def post(self, request, *args, **kwargs):
             if request.POST.get('thumber_token', None) is not None:
                 pk = request.POST.get('id', None)
                 if pk is None or pk == '':
@@ -105,7 +105,7 @@ class ContentFeedbackView():
                     return JsonResponse({"success": True, "id": user_feedback.id})
             else:
                 try:
-                    return super().post(request)
+                    return super().post(request, *args, **kwargs)
                 except AttributeError:
                     methods = [m.upper() for m in self.http_method_names if hasattr(self, m) and m.upper() != 'POST']
                     return HttpResponseNotAllowed(methods)
