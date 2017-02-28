@@ -28,6 +28,10 @@ class KwargsExampleView(TemplateView):
 @thumber_feedback
 class ExampleOverrideTemplateView(TemplateView):
     template_name = 'example.html'
+    satisfied_wording = 'Did you find what you were looking for?'
+
+    def get_submit_wording(self):
+        return 'Send feedback!'
 
 
 @thumber_feedback
