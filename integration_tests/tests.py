@@ -107,6 +107,15 @@ class ThumberTests(TestCase):
         feedback = ContentFeedback.objects.all()[0]
         self.assertEquals(feedback.comment, 'test comment')
 
+    def test_view_with_kwargs(self):
+        """Dedicated test to ensure that views with kwargs still work
+        """
+        view_name = 'thumber_integration_tests:kwargs_example'
+        path = reverse(view_name, kwargs={'slug': 'foobar'})
+        response = self.client.get(path)
+        self.assertContains(response, 'Example Template!', status_code=200)
+        self.assertContains(response, 'Was this service useful?')
+
     def test_basic_template_override(self):
         # Check that the example views (the good ones) correctly get the app-level feedback.html overrides
         response = self.client.get(reverse('thumber_integration_tests:example'))
