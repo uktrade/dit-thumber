@@ -22,15 +22,15 @@ def thumber_feedback(view):
 
 class ContentFeedbackView():
 
-        satisfired_wording = 'Was this service useful?'
-        yes_wording = 'Yes, thanks'
-        no_wording = 'Not really'
-        comment_wording = ''
-        comment_placeholder = 'Please tell us why?'
-        submit_wording = 'Send my feedback'
-        thanks_message = 'Thank you for your feedback'
-        error_message = 'Sorry, something went wrong'
-        first_option_yes = True
+        _satisfied_wording = 'Was this service useful?'
+        _yes_wording = 'Yes, thanks'
+        _no_wording = 'Not really'
+        _comment_wording = ''
+        _comment_placeholder = 'Please tell us why?'
+        _submit_wording = 'Send my feedback'
+        _thanks_message = 'Thank you for your feedback'
+        _error_message = 'Sorry, something went wrong'
+        _first_option_yes = True
 
         def get(self, request, *args, **kwargs):
             # Need to set something in the session to ensure that the user gets a session cookie
@@ -63,7 +63,7 @@ class ContentFeedbackView():
                 context['thanks_message'] = self.thanks_message
             else:
                 options = {
-                    'satisfied_wording': self.satisfired_wording,
+                    'satisfied_wording': self.satisfied_wording,
                     'yes_wording': self.yes_wording,
                     'no_wording': self.no_wording,
                     'comment_wording': self.comment_wording,
@@ -116,3 +116,76 @@ class ContentFeedbackView():
             path = url_data.path
             viewname = resolve(path).view_name
             return viewname
+
+        @property
+        def satisfied_wording(self):
+            if hasattr(self, 'get_satisfied_wording'):
+                return self.get_satisfied_wording()
+            elif hasattr(super(), 'satisfied_wording'):
+                return super().satisfied_wording
+            return self._satisfied_wording
+
+        @property
+        def yes_wording(self):
+            if hasattr(self, 'get_yes_wording'):
+                return self.get_yes_wording()
+            elif hasattr(super(), 'yes_wording'):
+                return super().yes_wording
+            return self._yes_wording
+
+        @property
+        def no_wording(self):
+            if hasattr(self, 'get_no_wording'):
+                return self.get_no_wording()
+            elif hasattr(super(), 'no_wording'):
+                return super().no_wording
+            return self._no_wording
+
+        @property
+        def comment_wording(self):
+            if hasattr(self, 'get_comment_wording'):
+                return self.get_comment_wording()
+            elif hasattr(super(), 'comment_wording'):
+                return super().comment_wording
+            return self._comment_wording
+
+        @property
+        def comment_placeholder(self):
+            if hasattr(self, 'get_comment_placeholder'):
+                return self.get_comment_placeholder()
+            elif hasattr(super(), 'comment_placeholder'):
+                return super().comment_placeholder
+            return self._comment_placeholder
+
+        @property
+        def submit_wording(self):
+            if hasattr(self, 'get_submit_wording'):
+                return self.get_submit_wording()
+            elif hasattr(super(), 'submit_wording'):
+                return super().submit_wording
+            return self._submit_wording
+
+        @property
+        def thanks_message(self):
+            if hasattr(self, 'get_thanks_message'):
+                return self.get_thanks_message()
+            elif hasattr(super(), 'thanks_message'):
+                return super().thanks_message
+            return self._thanks_message
+
+        @property
+        def error_message(self):
+            if hasattr(self, 'get_error_message'):
+                return self.get_error_message()
+            elif hasattr(super(), 'error_message'):
+                return super().error_message
+            return self._error_message
+
+        @property
+        def first_option_yes(self):
+            if hasattr(self, 'get_first_option_yes'):
+                return self.get_first_option_yes()
+            elif hasattr(super(), 'first_option_yes'):
+                return super().first_option_yes
+            return self._first_option_yes
+

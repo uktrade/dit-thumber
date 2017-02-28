@@ -129,5 +129,7 @@ class ThumberTests(TestCase):
     def test_complex_template_override(self):
         response = self.client.get(reverse('thumber_integration_tests:override_template_example'))
         self.assertContains(response, 'new test before form', status_code=200)
+        self.assertContains(response, 'Did you find what you were looking for?')
+        self.assertContains(response, 'Send feedback!')
         self.assertNotContains(response, 'test after form')
         self.assertContains(response, '<input type="reset" value="reset" />')

@@ -68,8 +68,9 @@ Further configuration
 You can add properties to you view class to modify various properties of the widget, shown below are the default values,
 just set the replacements as needed on your view class::
 
-    class MyView(ContentFeedbackMixin, ...):
-        satisfired_wording = "Was this service useful?" # The initial question presented to the user
+    @thumber_feedback
+    class MyView(...):
+        satisfied_wording = "Was this service useful?"  # The initial question presented to the user
         yes_wording = "Yes, thanks"                     # The positive radio option wording
         no_wording = "Not really"                       # The negative radio option wording
         comment_wording = ""                            # The label wording for the comment textarea
@@ -78,6 +79,16 @@ just set the replacements as needed on your view class::
         thanks_message = "Thank you for your feedback"  # The success/thank you message wording
         error_message = "Sorry, something went wrong"   # The failure message
         first_option_yes = True                         # Whether "Yes, thanks" appears as the first radio option
+
+Any of the above properties can also be added as methods with the prefix ``get_``, and such methods will take preference over
+a variable::
+
+    @thumber_feedback
+    class MyView(...):
+
+        def get_satisfied_wording(self):
+            return "Did you find this page about {0} useful?".format(self.page_description)
+
 
 You can hook into the success and error processing of the thumber to perform custom actions when sending feedback.  To
 do so, after the ``extra_js`` block in your template, there will be a ``thumber`` Javascript variable available.  You
@@ -124,6 +135,7 @@ Blocks to override, and some simlpe guidance for each are as follows:
     * This replaces the entire form, so it will need redefining
     * The form **must** have a 'thumber-form' class for the ajax code to work
     * The form's action must be the url of the view that is decorated with @thumber_view
+
 
 ============
 Contributing
