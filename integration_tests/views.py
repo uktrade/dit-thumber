@@ -17,6 +17,15 @@ class ExampleTemplateView(TemplateView):
 
 
 @thumber_feedback
+class KwargsExampleView(TemplateView):
+    template_name = 'example.html'
+
+    def get(self, request, slug=None):
+        # ignore the slug keyword argument
+        return super().get(request)
+
+
+@thumber_feedback
 class ExampleOverrideTemplateView(TemplateView):
     template_name = 'example.html'
 
