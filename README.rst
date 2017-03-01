@@ -49,7 +49,7 @@ Quick start
 
 #. Mark your class-based view with the decorator provided by thumber::
 
-    from thumber import thumber_feedback
+    from thumber.decorators import thumber_feedback
 
     @thumber_feedback
     class MyView(...):

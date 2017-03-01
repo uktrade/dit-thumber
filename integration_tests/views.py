@@ -1,7 +1,7 @@
 from django.views.generic import FormView, TemplateView
 from django.core.urlresolvers import reverse_lazy
 
-from thumber import thumber_feedback
+from thumber.decorators import thumber_feedback
 
 from .forms import ExampleForm
 
