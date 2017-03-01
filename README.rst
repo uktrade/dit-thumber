@@ -49,7 +49,7 @@ Quick start
 
 #. Mark your class-based view with the decorator provided by thumber::
 
-    from thumber import thumber_feedback
+    from thumber.decorators import thumber_feedback
 
     @thumber_feedback
     class MyView(...):
@@ -143,11 +143,13 @@ Contributing
 
 Contributions are welcome. Please follow the guidelines below to make life easier:
 
-* Fork the repo, branch of master, make changes, then make a PR to the main repo
+* Fork the repo, branch off release, make changes, then make a pull request (PR) to release on the main repo
 * Include tests for bug fixes or new features
 * Include documentation for any new features
-* Please limit changes for a PR to single-feature or single-bugfix changes - make multiple PRs for multiple discreet changes
-* Please squash commits - ideally a single commit, but at least to a sensible minimum.
+* Please limit changes for a PR to a single feature, or a single bugfix
+    * Make multiple PRs for multiple discrete changes
+* Please squash commits - ideally a single commit, but at least to a sensible minimum
+    * If a PR reasonably should have multiple commits, consider if it should *actually* be separate PRs
 
 
 =======
