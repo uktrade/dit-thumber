@@ -2,7 +2,6 @@ import os
 from urllib.parse import urlparse
 from itertools import chain
 
-from django.views.generic.edit import View
 from django.core.urlresolvers import resolve
 from django.conf import settings
 from django.http import JsonResponse
@@ -10,14 +9,6 @@ from django.http import HttpResponseNotAllowed
 
 from .models import ContentFeedback
 from .forms import ContentFeedbackForm
-
-
-__all__ = ['thumber_feedback']
-
-
-def thumber_feedback(view):
-    # Make a new class that inherits from the ContentFeedbackView, and the wrapped view class
-    return type('ThumberFeedbackView', (ContentFeedbackView, view,), {})
 
 
 class ContentFeedbackView():

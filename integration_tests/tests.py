@@ -1,8 +1,10 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 from thumber.models import ContentFeedback
+from thumber.decorators import thumber_feedback
 
 
 class ThumberTests(TestCase):
@@ -133,3 +135,21 @@ class ThumberTests(TestCase):
         self.assertContains(response, 'Send feedback!')
         self.assertNotContains(response, 'test after form')
         self.assertContains(response, '<input type="reset" value="reset" />')
+
+    def test_cannot_decorate_view_function(self):
+        """Attempt tp decorate a view function, check that ImproperlyConfigured gets raised,
+        as it can only be used to decorate django class-based views
+        """
+        with self.assertRaises(ImproperlyConfigured):
+            @thumber_feedback
+            def view_function(request):
+                return None
+
+    def test_cannot_decorate_non_class_views(self):
+        """Attempt tp decorate a class that does not inherit django.views.generic.View, 
+        ImproperlyConfigured should get raised, as it can only be used to decorate django class-based views
+        """
+        with self.assertRaises(ImproperlyConfigured):
+            @thumber_feedback
+            class NonClassView():
+                pass
