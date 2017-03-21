@@ -15,7 +15,7 @@ page.
 Requirements
 ------------
 
-* Python >= 3.0
+* Python >= 3.4
 * Django >= 1.9
 * jQuery >= 1.7
 
@@ -158,15 +158,3 @@ License
 
 MIT licensed. See the bundled `LICENSE <https://github.com/uktrade/dit-thumber/blob/master/LICENSE>`_ file for more
 details.
-
-
-====
-TODO
-====
-
-* Get continuous integration to run on multiple python versions from 3.0+ 
-    * Currently only running on 3.5.0
-    * Utilise parallelism
-* Run tests on multiple Django versions
-    * Currently only running against Django 1.9
-    * Utilise parallelism
