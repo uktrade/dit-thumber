@@ -43,7 +43,7 @@ class BadExampleTemplateView(TemplateView):
 class ExampleFormView(FormView):
     template_name = "example.html"
     form_class = ExampleForm
-    success_url = reverse_lazy('thumber_integration_tests:example_form_success')
+    success_url = reverse_lazy('thumber_tests:example_form_success')
 
 
 class ExampleFormSuccessView(TemplateView):

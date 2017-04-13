@@ -1,11 +1,12 @@
-machine:
-  python:
-    version: 3.5.0
-
 dependencies:
-  pre:
-    - pip install 'Django>=1.9.0,<1.10'
+    cache_directories:
+        - ".tox"
+    override:
+        - "tox --notest"
+    pre:
+        - pip install tox
+        - pyenv local 3.4.3 3.5.0
 
 test:
-  override:
-    - ./run_tests.py
+    override:
+        - tox

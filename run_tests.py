@@ -1,61 +1,19 @@
-#!/usr/bin/env python
-"""
-Test runner script.
-Please use `tox` to run it in multiple environments.
-"""
-
-import django
 import os
+import sys
+import django
 
 from django.conf import settings
-from django.core.management import call_command
+from django.test.utils import get_runner
 
 
-conf = dict(
-    # Need a DB (use sqlite in memory) for storing models
-    DATABASES=dict(
-        default=dict(
-            ENGINE='django.db.backends.sqlite3',
-            NAME=':memory:',
-        ),
-    ),
+def run():
+    os.environ.clear()
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
+    django.setup()
+    TestRunner = get_runner(settings)
+    test_runner = TestRunner()
+    failures = test_runner.run_tests(["tests"])
+    sys.exit(bool(failures))
 
-    # Load our test-specific url conf
-    ROOT_URLCONF='integration_tests.root_urls',
-
-    # We need the session middlewre, since it's used by thumber
-    MIDDLEWARE_CLASSES=[
-        'django.contrib.sessions.middleware.SessionMiddleware',
-    ],
-
-    # We also need the sessions app, staticfiles (used in templates), and thumber itself installed
-    INSTALLED_APPS=[
-        'django.contrib.sessions',
-        'django.contrib.staticfiles',
-        'integration_tests',
-        'thumber'
-    ],
-
-    # Must specify STATIC_URL if installing staticfiles app
-    STATIC_URL='/static/',
-
-    # We don't want to a DB for our sessions, just use the filesystem
-    SESSION_ENGINE="django.contrib.sessions.backends.file",
-
-    # Add the templates dir as this dir (so that example.html can be found)
-    TEMPLATES=[
-        {
-            'BACKEND': 'django.template.backends.django.DjangoTemplates',
-            'DIRS': [],
-            'APP_DIRS': True,
-        },
-    ],
-)
-
-
-settings.configure(**conf)
-django.setup()
-
-if __name__ == "__main__":
-    call_command('test', 'integration_tests')
-    call_command('test', 'thumber')
+if __name__ == '__main__':
+    run()
