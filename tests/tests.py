@@ -17,14 +17,14 @@ class ThumberTests(TestCase):
 
     def test_bad_template_no_form(self):
         # Use a view whose template doesn't specify the thumber_feedback block
-        response = self.client.get(reverse('thumber_integration_tests:bad_example'))
+        response = self.client.get(reverse('thumber_tests:bad_example'))
         # Ensure it has it's regular content, but not the thumber form
         self.assertContains(response, 'Bad Example Template!', status_code=200)
         self.assertNotContains(response, 'Was this service useful?')
 
     def test_get_has_thumber_form(self):
         # Use a view whose template does correctly specify the thumber_feedback block
-        response = self.client.get(reverse('thumber_integration_tests:example'))
+        response = self.client.get(reverse('thumber_tests:example'))
         # Ensure it has it's regular content and the thumber form
         self.assertContains(response, 'Example Template!', status_code=200)
         self.assertContains(response, 'Was this service useful?')
@@ -36,12 +36,12 @@ class ThumberTests(TestCase):
     def test_original_post_method(self):
         # Use a form view and post it's normal form back to it to make sure the thumber post handling is ignored
         data = {'char_field': 'foo'}
-        response = self.client.post(reverse('thumber_integration_tests:example_form'), data)
-        self.assertRedirects(response, reverse('thumber_integration_tests:example_form_success'))
+        response = self.client.post(reverse('thumber_tests:example_form'), data)
+        self.assertRedirects(response, reverse('thumber_tests:example_form_success'))
 
     def test_no_original_post_method(self):
         # Use a view with no post method, and make sure that if the thumber form is not posted, we get a 400
-        response = self.client.post(reverse('thumber_integration_tests:example'), {})
+        response = self.client.post(reverse('thumber_tests:example'), {})
         self.assertEquals(response.status_code, 405)
 
     def test_non_js_post_workflow(self):
@@ -49,7 +49,7 @@ class ThumberTests(TestCase):
         the thumber success message, and that a populated ContentFeedback model is created.
         """
 
-        view_name = 'thumber_integration_tests:example_form'
+        view_name = 'thumber_tests:example_form'
         path = reverse(view_name)
         http_referer = 'http://example.com{0}'.format(path)
 
@@ -71,7 +71,7 @@ class ThumberTests(TestCase):
         self.assertEquals(feedback.comment, 'test comment')
 
     def test_overriden_ajax_post(self):
-        view_name = 'thumber_integration_tests:example_form'
+        view_name = 'thumber_tests:example_form'
         path = reverse(view_name)
         http_referer = 'http://example.com{0}'.format(path)
 
@@ -112,7 +112,7 @@ class ThumberTests(TestCase):
     def test_view_with_kwargs(self):
         """Dedicated test to ensure that views with kwargs still work
         """
-        view_name = 'thumber_integration_tests:kwargs_example'
+        view_name = 'thumber_tests:kwargs_example'
         path = reverse(view_name, kwargs={'slug': 'foobar'})
         response = self.client.get(path)
         self.assertContains(response, 'Example Template!', status_code=200)
@@ -120,16 +120,16 @@ class ThumberTests(TestCase):
 
     def test_basic_template_override(self):
         # Check that the example views (the good ones) correctly get the app-level feedback.html overrides
-        response = self.client.get(reverse('thumber_integration_tests:example'))
+        response = self.client.get(reverse('thumber_tests:example'))
         self.assertContains(response, 'test before form', status_code=200)
         self.assertContains(response, 'test after form')
 
-        response = self.client.get(reverse('thumber_integration_tests:example_form'))
+        response = self.client.get(reverse('thumber_tests:example_form'))
         self.assertContains(response, 'test before form', status_code=200)
         self.assertContains(response, 'test after form')
 
     def test_complex_template_override(self):
-        response = self.client.get(reverse('thumber_integration_tests:override_template_example'))
+        response = self.client.get(reverse('thumber_tests:override_template_example'))
         self.assertContains(response, 'new test before form', status_code=200)
         self.assertContains(response, 'Did you find what you were looking for?')
         self.assertContains(response, 'Send feedback!')
