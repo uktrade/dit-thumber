@@ -2,7 +2,7 @@
 SECRET_KEY = 'fake-key'
 
 # We also need the sessions app, staticfiles (used in templates), and thumber itself installed
-INSTALLED_APPS=[
+INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.staticfiles',
     'tests',
@@ -18,21 +18,21 @@ DATABASES = {
 }
 
 # Load our test-specific url conf
-ROOT_URLCONF='tests.root_urls'
+ROOT_URLCONF = 'tests.root_urls'
 
 # We need the session middlewre, since it's used by thumber
-MIDDLEWARE_CLASSES=[
+MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
 ]
 
 # Must specify STATIC_URL if installing staticfiles app
-STATIC_URL='/static/'
+STATIC_URL = '/static/'
 
 # We don't want to a DB for our sessions, just use the filesystem
-SESSION_ENGINE="django.contrib.sessions.backends.file"
+SESSION_ENGINE = "django.contrib.sessions.backends.file"
 
 # Add the templates dir as this dir (so that example.html can be found)
-TEMPLATES=[
+TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],

@@ -179,4 +179,3 @@ class ContentFeedbackView():
         elif hasattr(super(), 'first_option_yes'):
             return super().first_option_yes
         return self._first_option_yes
-
