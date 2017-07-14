@@ -61,6 +61,44 @@ Quick start
     {% block thumber_feedback %}{% endblock %}
 
 
+================
+Getting Data Out
+================
+
+It is recommended that you register the ContentFeedback model to the admin interface (if you are using it in your project),
+so you can easily go through it's data and can specify the fields you want to see, something like::
+    
+    from django.contrib import admin
+    from thumber.models import ContentFeedback
+
+    @admin.register(ContentFeedback)
+    class ContentFeedbackAdmin(admin.ModelAdmin):
+
+        list_display = ['created', 'satisfied', 'view_name', 'comment']
+        ordering = ['created']
+
+And of course you can always just inspect the models directly in code or the django shell::
+
+    from thumber.models import ContentFeedback
+    ContentFeedback.objects.all()
+    ...
+
+There is one simple shortcut which is a common use case, to see the average feedback for each view in your applcation.
+To get aggregate data for every view, there is a shortcut on the model manager of the ContentFeedbcak model::
+    
+    from thumber.models import ContentFeedback
+    ContentFeedback.objects.average_for_views()
+    [ ... ]
+
+Or it can be performed on queryset too, meaning you can prefilter (e.g. to date ranges) before aggregating::
+    
+    from datetime import datetime, timedelta
+    from thumber.models import ContentFeedback
+    
+    # Get data only for the past week
+    ContentFeedback.objects.filter(created__gt=datetime.now() - timedelta(days=7)).average_for_views()
+    [ ... ]
+
 =====================
 Further configuration
 =====================
