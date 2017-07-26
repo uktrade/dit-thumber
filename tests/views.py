@@ -27,6 +27,14 @@ class ExampleMultipleTemplateView(TemplateView):
 
 
 @thumber_feedback
+class ArgsExampleView(TemplateView):
+    template_name = 'example.html'
+
+    def get(self, request, arg):
+        return super().get(request)
+
+
+@thumber_feedback
 class KwargsExampleView(TemplateView):
     template_name = 'example.html'
 

@@ -1,10 +1,12 @@
+import ast
+
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-from thumber.models import ContentFeedback
-from thumber.decorators import thumber_feedback
+from thumber.models import Feedback
+from thumber import thumber_feedback
 
 
 class ThumberTests(TestCase):
@@ -51,7 +53,7 @@ class ThumberTests(TestCase):
 
     def test_non_js_post_workflow(self):
         """ Post to a view ensuring that the response is like the normal 'get' response, but with
-        the thumber success message, and that a populated ContentFeedback model is created.
+        the thumber success message, and that a populated Feedback model is created.
         """
 
         view_name = 'thumber_tests:example_form'
@@ -67,9 +69,9 @@ class ThumberTests(TestCase):
         response = self.client.post(path, data, HTTP_REFERER=http_referer)
         self.assertContains(response, 'Thank you for your feedback', status_code=200)
 
-        # Check that a ContentFeedback model was created with the correct details
-        self.assertEquals(ContentFeedback.objects.count(), 1)
-        feedback = ContentFeedback.objects.all()[0]
+        # Check that a Feedback model was created with the correct details
+        self.assertEquals(Feedback.objects.count(), 1)
+        feedback = Feedback.objects.all()[0]
         self.assertEquals(feedback.view_name, view_name)
         self.assertEquals(feedback.url, http_referer)
         self.assertEquals(feedback.satisfied, True)
@@ -95,8 +97,8 @@ class ThumberTests(TestCase):
         self.assertEquals(json['success'], True)
         pk = json['id']
 
-        self.assertEquals(ContentFeedback.objects.count(), 1)
-        feedback = ContentFeedback.objects.all()[0]
+        self.assertEquals(Feedback.objects.count(), 1)
+        feedback = Feedback.objects.all()[0]
         self.assertEquals(feedback.view_name, view_name)
         self.assertEquals(feedback.url, http_referer)
         self.assertEquals(feedback.satisfied, False)
@@ -110,19 +112,56 @@ class ThumberTests(TestCase):
         self.assertIn('success', json)
         self.assertEquals(json['success'], True)
         # There should still only be 1 model, and it shoudl now have the test comment
-        self.assertEquals(ContentFeedback.objects.count(), 1)
-        feedback = ContentFeedback.objects.all()[0]
+        self.assertEquals(Feedback.objects.count(), 1)
+        feedback = Feedback.objects.all()[0]
         self.assertEquals(feedback.comment, 'test comment')
 
-    def test_view_with_kwargs(self):
-        """Dedicated test to ensure that views with kwargs still work
+    def test_view_with_args(self):
+        """Dedicated test to ensure that views with args work
         """
-        view_name = 'thumber_tests:kwargs_example'
-        path = reverse(view_name, kwargs={'slug': 'foobar'})
-        response = self.client.get(path)
+        view_name = 'thumber_tests:args_example'
+        args = ('foobar',)
+        path = reverse(view_name, args=args)
+        http_referer = 'http://example.com{0}'.format(path)
+
+        response = self.client.get(path, follow=True)
         self.assertContains(response, 'Example Template!', status_code=200)
         self.assertContains(response, 'Was this service useful?')
 
+        # Post with thumber_token=ajax for a JSON response
+        data = {'satisfied': 'True', 'thumber_token': 'ajax'}
+        response = self.client.post(path, data, HTTP_REFERER=http_referer)
+        
+        # Check a Feedback model was created
+        self.assertEquals(Feedback.objects.count(), 1)
+        feedback = Feedback.objects.all()[0]
+        view_args = ast.literal_eval(feedback.view_args)
+        self.assertEquals(view_args[0], args)
+        self.assertEquals(view_args[1], {})
+
+    def test_view_with_kwargs(self):
+        """Dedicated test to ensure that views with kwargs work, and the kwargs get stored in the model
+        """
+        view_name = 'thumber_tests:kwargs_example'
+        kwargs = {'slug': 'foobar'}
+        path = reverse(view_name, kwargs=kwargs)
+        http_referer = 'http://example.com{0}'.format(path)
+
+        response = self.client.get(path, follow=True)
+        self.assertContains(response, 'Example Template!', status_code=200)
+        self.assertContains(response, 'Was this service useful?')
+
+        # Post with thumber_token=ajax for a JSON response
+        data = {'satisfied': 'True', 'thumber_token': 'ajax'}
+        response = self.client.post(path, data, HTTP_REFERER=http_referer)
+        
+        # Check a Feedback model was created
+        self.assertEquals(Feedback.objects.count(), 1)
+        feedback = Feedback.objects.all()[0]
+        view_args = ast.literal_eval(feedback.view_args)
+        self.assertEquals(view_args[1], kwargs)
+        self.assertEquals(view_args[0], ())
+        
     def test_basic_template_override(self):
         # Check that the example views (the good ones) correctly get the app-level feedback.html overrides
         response = self.client.get(reverse('thumber_tests:example'))
@@ -184,11 +223,11 @@ class ThumberAggregationTests(TestCase):
         self.client.post(path, data, HTTP_REFERER=http_referer)
 
         # Check we have 4 feedbacks
-        feedback = ContentFeedback.objects.count()
+        feedback = Feedback.objects.count()
         self.assertEquals(feedback, 4)
 
         # Get the average of feedbacks
-        average_feedback = ContentFeedback.objects.average_for_views()
+        average_feedback = Feedback.objects.average_for_views()
 
         # There should only be one item, as it's grouped on view name
         self.assertEquals(len(average_feedback), 1)
@@ -203,7 +242,7 @@ class ThumberAggregationTests(TestCase):
         self.assertEquals(average_feedback[0]['avg'], 0.75)
 
         # We can also get the average feedback per view on a queryset (equivalent to above)
-        average_feedback = ContentFeedback.objects.all().average_for_views()
+        average_feedback = Feedback.objects.all().average_for_views()
         self.assertEquals(average_feedback[0]['view_name'], view_name)
         self.assertEquals(average_feedback[0]['avg'], 0.75)
 
@@ -234,24 +273,24 @@ class ThumberAggregationTests(TestCase):
         self.client.post(path2, data, HTTP_REFERER=http_referer2)
 
         # Check we have 3 feedbacks
-        feedback = ContentFeedback.objects.count()
+        feedback = Feedback.objects.count()
         self.assertEquals(feedback, 3)
 
         # Get the average of feedbacks
-        average_feedback = ContentFeedback.objects.average_for_views()
+        average_feedback = Feedback.objects.average_for_views()
 
         # There should only be 2 item, one for each view
         self.assertEquals(len(average_feedback), 2)
 
         # Get the average of feedbacks for the first view
-        average_feedback1 = ContentFeedback.objects.filter(view_name=view_name1).average_for_views()
+        average_feedback1 = Feedback.objects.filter(view_name=view_name1).average_for_views()
 
         # The view name should be our app's example_view, and the average should be 50% positive
         self.assertEquals(average_feedback1[0]['view_name'], view_name1)
         self.assertEquals(average_feedback1[0]['avg'], 0.5)
 
         # Get the average of feedbacks for the second view
-        average_feedback2 = ContentFeedback.objects.filter(view_name=view_name2).average_for_views()
+        average_feedback2 = Feedback.objects.filter(view_name=view_name2).average_for_views()
 
         # The view name should be our app's example_view, and the average should be 100% positive
         self.assertEquals(average_feedback2[0]['view_name'], view_name2)
