@@ -6,6 +6,8 @@ from django.core.urlresolvers import resolve
 from django.conf import settings
 from django.http import JsonResponse
 from django.http import HttpResponseNotAllowed
+from django.utils import six
+from django.template.loader import get_template, select_template
 
 from .models import ContentFeedback
 from .forms import ContentFeedbackForm
@@ -46,8 +48,8 @@ class ContentFeedbackView():
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        names = super().get_template_names()
-        context['template_name'] = names[0]
+        template_name = self._resolve_template()
+        context['parent_template'] = template_name
 
         if self.request.method == 'POST' and self.request.POST.get('thumber_token', None) == 'sync':
             # feedback has been given via non AJAX request, add the 'thank you' message to the context
@@ -68,6 +70,21 @@ class ContentFeedbackView():
             context['error_message'] = self.error_message
 
         return context
+
+    def _resolve_template(self):
+        """
+        Thie code lifted from django.template.response.SimpleTemplateResponse, it resolves a string, list of strings,
+        or template object into a valid template object.
+        """
+        
+        template = super().get_template_names()
+
+        if isinstance(template, (list, tuple)):
+            return select_template(template)
+        elif isinstance(template, six.string_types):
+            return get_template(template)
+        else:
+            return template
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('thumber_token', None) is not None:

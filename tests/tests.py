@@ -27,6 +27,17 @@ class ThumberTests(TestCase):
         self.assertIn('thumber_form', response.context)
         self.assertEquals(response.context['example_key'], 'example_val')
 
+    def test_multiple_templates(self):
+        # Use a view that specifies multiple templates, and ensure that the correct template is found and works
+        response = self.client.get(reverse('thumber_tests:multiexample'))
+        # Ensure it has it's regular content and the thumber form
+        self.assertContains(response, 'Example Template!', status_code=200)
+        self.assertContains(response, 'Was this service useful?')
+
+        # Check the context to make sure it has both the thumber_form, and what the view would normally add
+        self.assertIn('thumber_form', response.context)
+        self.assertEquals(response.context['example_key'], 'example_val')
+
     def test_original_post_method(self):
         # Use a form view and post it's normal form back to it to make sure the thumber post handling is ignored
         data = {'char_field': 'foo'}

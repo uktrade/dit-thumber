@@ -17,6 +17,16 @@ class ExampleTemplateView(TemplateView):
 
 
 @thumber_feedback
+class ExampleMultipleTemplateView(TemplateView):
+
+    def get_template_names(self):
+        return ['non_existant.html', 'example.html']
+
+    def get_context_data(self, **kwargs):
+        return {'example_key': 'example_val'}
+
+
+@thumber_feedback
 class KwargsExampleView(TemplateView):
     template_name = 'example.html'
 
