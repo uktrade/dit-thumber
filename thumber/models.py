@@ -23,7 +23,7 @@ class FeedbackManager(models.Manager):
         return self.get_queryset().average_for_views()
 
 
-class ContentFeedback(models.Model):
+class Feedback(models.Model):
     """
     Basic model for storing user-submitted feedback audit data
     """
@@ -34,7 +34,7 @@ class ContentFeedback(models.Model):
 
     url = models.URLField()
     view_name = models.CharField(max_length=255)
-    utm_params = models.TextField(null=True)
+    view_args = models.TextField(null=True)
     session = models.CharField(max_length=64)
 
     objects = FeedbackManager()
@@ -45,3 +45,4 @@ class ContentFeedback(models.Model):
 
     class Meta:
         ordering = ('-created',)
+        verbose_name_plural = "Feedback"
