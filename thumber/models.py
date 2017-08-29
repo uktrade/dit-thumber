@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.db.models import Avg, Case, When, Value, IntegerField
+from django.db.models import Avg, Case, When, Value, Count, IntegerField
 
 
 class FeedbackQuerySet(models.QuerySet):
@@ -11,7 +11,7 @@ class FeedbackQuerySet(models.QuerySet):
                     When(satisfied=False, then=Value(0)),
                     output_field=IntegerField())
 
-        return self.values('view_name').annotate(avg=Avg(case)).order_by('view_name')
+        return self.values('view_name').annotate(average=Avg(case), count=Count('view_name')).order_by('view_name')
 
 
 class FeedbackManager(models.Manager):
@@ -23,7 +23,7 @@ class FeedbackManager(models.Manager):
         return self.get_queryset().average_for_views()
 
 
-class ContentFeedback(models.Model):
+class Feedback(models.Model):
     """
     Basic model for storing user-submitted feedback audit data
     """
@@ -34,7 +34,7 @@ class ContentFeedback(models.Model):
 
     url = models.URLField()
     view_name = models.CharField(max_length=255)
-    utm_params = models.TextField(null=True)
+    view_args = models.TextField(null=True)
     session = models.CharField(max_length=64)
 
     objects = FeedbackManager()
@@ -45,3 +45,4 @@ class ContentFeedback(models.Model):
 
     class Meta:
         ordering = ('-created',)
+        verbose_name_plural = "Feedback"

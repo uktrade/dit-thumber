@@ -9,11 +9,11 @@ from django.http import HttpResponseNotAllowed
 from django.utils import six
 from django.template.loader import get_template, select_template
 
-from .models import ContentFeedback
-from .forms import ContentFeedbackForm
+from .models import Feedback
+from .forms import ThumberForm
 
 
-class ContentFeedbackView():
+class ThumberView():
 
     _satisfied_wording = 'Was this service useful?'
     _yes_wording = 'Yes, thanks'
@@ -63,7 +63,7 @@ class ContentFeedbackView():
                 'comment_placeholder': self.comment_placeholder,
                 'first_option_yes': self.first_option_yes
             }
-            context['thumber_form'] = ContentFeedbackForm(**options)
+            context['thumber_form'] = ThumberForm(**options)
             context.update(options)
             context['submit_wording'] = self.submit_wording
             context['thanks_message'] = self.thanks_message
@@ -90,16 +90,17 @@ class ContentFeedbackView():
         if request.POST.get('thumber_token', None) is not None:
             pk = request.POST.get('id', None)
             if pk is None or pk == '':
-                # No PK, this means we need to create a new ContentFeedback object
+                # No PK, this means we need to create a new Feedback object
                 http_referer = self.request.META.get('HTTP_REFERER')
                 sessionid = self.request.COOKIES[settings.SESSION_COOKIE_NAME]
-                user_feedback = ContentFeedbackForm(data=request.POST).save(commit=False)
+                user_feedback = ThumberForm(data=request.POST).save(commit=False)
                 user_feedback.url = http_referer
                 user_feedback.view_name = self._get_view_from_url(http_referer)
                 user_feedback.session = sessionid
+                user_feedback.view_args = (request.resolver_match.args, request.resolver_match.kwargs)
             else:
-                # PK given, so this ContentFeedback already exists and just needs the comment adding
-                user_feedback = ContentFeedback.objects.get(pk=pk)
+                # PK given, so this Feedback already exists and just needs the comment adding
+                user_feedback = Feedback.objects.get(pk=pk)
                 user_feedback.comment = request.POST['comment']
 
             user_feedback.save()

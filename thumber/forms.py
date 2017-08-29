@@ -1,13 +1,13 @@
 from django import forms
 from django.core.urlresolvers import resolve
 
-from .models import ContentFeedback
+from .models import Feedback
 
 
-class ContentFeedbackForm(forms.ModelForm):
+class ThumberForm(forms.ModelForm):
 
     class Meta:
-        model = ContentFeedback
+        model = Feedback
         fields = ['satisfied', 'comment']
 
     thumber_token = forms.CharField(initial='sync', widget=forms.HiddenInput())

@@ -49,7 +49,7 @@ Quick start
 
 #. Mark your class-based view with the decorator provided by thumber::
 
-    from thumber.decorators import thumber_feedback
+    from thumber import thumber_feedback
 
     @thumber_feedback
     class MyView(...):
@@ -65,38 +65,43 @@ Quick start
 Getting Data Out
 ================
 
-It is recommended that you register the ContentFeedback model to the admin interface (if you are using it in your project),
-so you can easily go through it's data and can specify the fields you want to see, something like::
+A default ModelAdmin is registered for you in the admin interface, so you can see the data that it produces easily.  But you can create your own ModelAdmin if you prefer to specify more precisely how you want it to work.  Something like::
     
     from django.contrib import admin
-    from thumber.models import ContentFeedback
+    from thumber.models import Feedback
 
-    @admin.register(ContentFeedback)
-    class ContentFeedbackAdmin(admin.ModelAdmin):
-
-        list_display = ['created', 'satisfied', 'view_name', 'comment']
+    @admin.register(Feedback)
+    class FeedbackAdmin(admin.ModelAdmin):
+        list_display = ['view_name', 'comment']
         ordering = ['created']
+
+PLEASE NOTE - If you install the thumber app before the app where you attempt to register the Feedback model to the admin site, you will need to `unregister` it first::
+
+    admin.site.unregister(Feedback)
+    admin.site.register(Feedback, FeedbackAdmin)
+
+If you install the thumber app after your app, then the thumber will only attempt to register the Feedback model, if it is not already registered.
 
 And of course you can always just inspect the models directly in code or the django shell::
 
-    from thumber.models import ContentFeedback
-    ContentFeedback.objects.all()
+    from thumber.models import Feedback
+    Feedback.objects.all()
     ...
 
 There is one simple shortcut which is a common use case, to see the average feedback for each view in your applcation.
 To get aggregate data for every view, there is a shortcut on the model manager of the ContentFeedbcak model::
     
-    from thumber.models import ContentFeedback
-    ContentFeedback.objects.average_for_views()
+    from thumber.models import Feedback
+    Feedback.objects.average_for_views()
     [ ... ]
 
 Or it can be performed on queryset too, meaning you can prefilter (e.g. to date ranges) before aggregating::
     
     from datetime import datetime, timedelta
-    from thumber.models import ContentFeedback
+    from thumber.models import Feedback
     
     # Get data only for the past week
-    ContentFeedback.objects.filter(created__gt=datetime.now() - timedelta(days=7)).average_for_views()
+    Feedback.objects.filter(created__gt=datetime.now() - timedelta(days=7)).average_for_views()
     [ ... ]
 
 =====================
