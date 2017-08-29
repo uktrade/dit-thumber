@@ -232,19 +232,23 @@ class ThumberAggregationTests(TestCase):
         # There should only be one item, as it's grouped on view name
         self.assertEquals(len(average_feedback), 1)
 
-        # And the one item should have keys 'avg' and 'view_name'
-        self.assertEquals(len(average_feedback[0]), 2)
-        self.assertIn('avg', average_feedback[0])
+        # And the one item should have keys 'average', 'count', and 'view_name'
+        self.assertEquals(len(average_feedback[0]), 3)
+        self.assertIn('average', average_feedback[0])
+        self.assertIn('count', average_feedback[0])
         self.assertIn('view_name', average_feedback[0])
+
+        # There shoudl be 4 'votes' for this view
+        self.assertEquals(average_feedback[0]['count'], 4)
 
         # The view name should be our app's example_view, and the average should be 75% positive
         self.assertEquals(average_feedback[0]['view_name'], view_name)
-        self.assertEquals(average_feedback[0]['avg'], 0.75)
+        self.assertEquals(average_feedback[0]['average'], 0.75)
 
         # We can also get the average feedback per view on a queryset (equivalent to above)
         average_feedback = Feedback.objects.all().average_for_views()
         self.assertEquals(average_feedback[0]['view_name'], view_name)
-        self.assertEquals(average_feedback[0]['avg'], 0.75)
+        self.assertEquals(average_feedback[0]['average'], 0.75)
 
     def test_view_averages_filtered(self):
         """ Submit feedback to multiple views, and make sure that we can filter the queryset
@@ -285,13 +289,15 @@ class ThumberAggregationTests(TestCase):
         # Get the average of feedbacks for the first view
         average_feedback1 = Feedback.objects.filter(view_name=view_name1).average_for_views()
 
-        # The view name should be our app's example_view, and the average should be 50% positive
+        # The view name should be our app's example_view, and the average should be 50% positive, with 2 votes
+        self.assertEquals(average_feedback1[0]['count'], 2)
         self.assertEquals(average_feedback1[0]['view_name'], view_name1)
-        self.assertEquals(average_feedback1[0]['avg'], 0.5)
+        self.assertEquals(average_feedback1[0]['average'], 0.5)
 
         # Get the average of feedbacks for the second view
         average_feedback2 = Feedback.objects.filter(view_name=view_name2).average_for_views()
 
-        # The view name should be our app's example_view, and the average should be 100% positive
+        # The view name should be our app's example_view, and the average should be 100% positive, with 1 vote
+        self.assertEquals(average_feedback2[0]['count'], 1)
         self.assertEquals(average_feedback2[0]['view_name'], view_name2)
-        self.assertEquals(average_feedback2[0]['avg'], 1.0)
+        self.assertEquals(average_feedback2[0]['average'], 1.0)
