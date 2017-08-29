@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.db.models import Avg, Case, When, Value, IntegerField
+from django.db.models import Avg, Case, When, Value, Count, IntegerField
 
 
 class FeedbackQuerySet(models.QuerySet):
@@ -11,7 +11,7 @@ class FeedbackQuerySet(models.QuerySet):
                     When(satisfied=False, then=Value(0)),
                     output_field=IntegerField())
 
-        return self.values('view_name').annotate(avg=Avg(case)).order_by('view_name')
+        return self.values('view_name').annotate(average=Avg(case), count=Count('view_name')).order_by('view_name')
 
 
 class FeedbackManager(models.Manager):
