@@ -21,7 +21,7 @@ DATABASES = {
 ROOT_URLCONF = 'tests.root_urls'
 
 # We need the session middlewre, since it's used by thumber
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
 ]
 
@@ -29,7 +29,7 @@ MIDDLEWARE_CLASSES = [
 STATIC_URL = '/static/'
 
 # We don't want to a DB for our sessions, just use the filesystem
-SESSION_ENGINE = "django.contrib.sessions.backends.file"
+SESSION_ENGINE = 'django.contrib.sessions.backends.file'
 
 # Add the templates dir as this dir (so that example.html can be found)
 TEMPLATES = [

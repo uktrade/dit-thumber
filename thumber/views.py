@@ -2,7 +2,7 @@ import os
 from urllib.parse import urlparse
 from itertools import chain
 
-from django.core.urlresolvers import resolve
+from django.urls import resolve
 from django.conf import settings
 from django.http import JsonResponse
 from django.http import HttpResponseNotAllowed
