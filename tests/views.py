@@ -1,5 +1,5 @@
 from django.views.generic import FormView, TemplateView
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 from thumber.decorators import thumber_feedback
 
