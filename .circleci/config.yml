@@ -31,10 +31,10 @@ workflows:
   version: 2
   test_and_publish_to_pypi:
     jobs:
-        - test
-      - publish_to_pypi:
-          requires:
-            - test
-          filters:
-            branches:
-              only: master
+        - test      
+        - publish_to_pypi:
+            requires:
+              - test
+            filters:
+              branches:
+                only: master
