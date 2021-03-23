@@ -76,7 +76,6 @@ class ThumberView():
         Thie code lifted from django.template.response.SimpleTemplateResponse, it resolves a string, list of strings,
         or template object into a valid template object.
         """
-        
         template = super().get_template_names()
 
         if isinstance(template, (list, tuple)):

@@ -1,0 +1,39 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/python:3.6.6
+    steps:
+      - checkout
+      - run:
+          command: |
+            python3 -m venv .venv
+            . .venv/bin/activate
+            pip install --upgrade pip
+            make test_requirements
+            make test
+              
+  publish_to_pypi:
+    docker:
+      - image: circleci/python:3.6.6
+    steps:
+      - checkout
+      - run:
+          command: |
+            python3 -m venv .venv
+            . .venv/bin/activate
+            pip install --upgrade pip
+            make test_requirements
+            make publish
+
+workflows:
+  version: 2
+  test_and_publish_to_pypi:
+    jobs:
+        - test      
+        - publish_to_pypi:
+            requires:
+              - test
+            filters:
+              branches:
+                only: master
