@@ -11,9 +11,8 @@ jobs:
             . .venv/bin/activate
             pip install --upgrade pip
             make test_requirements
-            make pytest
-            codecov
-  
+            make test
+              
   publish_to_pypi:
     docker:
       - image: circleci/python:3.6.6

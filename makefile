@@ -5,7 +5,7 @@ clean:
 	-find . -type d -name "__pycache__" -delete
 
 test:
-	python run_tests
+	python run_tests.py
 
 test_requirements:
 	pip install -e .[test]
