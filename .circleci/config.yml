@@ -34,3 +34,6 @@ workflows:
         - publish_to_pypi:
             requires:
               - test
+            filters:
+              branches:
+                only: master
