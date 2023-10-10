@@ -1,6 +1,6 @@
-from django.conf.urls import url, include
+from django.urls import re_path, include
 
 
 urlpatterns = [
-    url(r'^', include('tests.urls')),
+    re_path(r'^', include('tests.urls')),
 ]

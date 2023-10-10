@@ -6,7 +6,7 @@ from django.urls import resolve
 from django.conf import settings
 from django.http import JsonResponse
 from django.http import HttpResponseNotAllowed
-from django.utils import six
+from six import string_types
 from django.template.loader import get_template, select_template
 
 from .models import Feedback
@@ -80,7 +80,7 @@ class ThumberView():
 
         if isinstance(template, (list, tuple)):
             return select_template(template)
-        elif isinstance(template, six.string_types):
+        elif isinstance(template, string_types):
             return get_template(template)
         else:
             return template

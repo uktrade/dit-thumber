@@ -9,7 +9,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-thumber',
-    version='2.0.0',
+    version='3.0.0',
     packages=find_packages(),
     include_package_data=True,
     license='MIT License',
@@ -20,7 +20,7 @@ setup(
     author_email='david@downes.co.uk',
     test_suite="run_tests.run",
     install_requires=[
-        'django>=2.2.10,<3.0a1',
+        'django>=1.11,<=4.2',
     ],
     extras_require={
         'test': [
@@ -32,12 +32,14 @@ setup(
             'isort==5.6.4',
             'flake8==3.8.4',
             'pre-commit-hooks==3.3.0',
+            'six==1.16.0',
         ]
     },
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
         'Framework :: Django :: 2.2',
+        'Framework :: Django :: 4.0',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
