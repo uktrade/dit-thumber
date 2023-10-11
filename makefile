@@ -13,7 +13,6 @@ test_requirements:
 
 publish:
 	rm -rf build dist; \
-	pip install wheel; \
 	python setup.py bdist_wheel; \
 	twine upload --username $$DIRECTORY_PYPI_USERNAME --password $$DIRECTORY_PYPI_PASSWORD dist/*
 

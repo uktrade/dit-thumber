@@ -5,17 +5,16 @@ from .models import Feedback
 
 
 class ThumberForm(forms.ModelForm):
-
     class Meta:
         model = Feedback
         fields = ['satisfied', 'comment']
 
     thumber_token = forms.CharField(initial='sync', widget=forms.HiddenInput())
     satisfied = forms.TypedChoiceField(
-                    coerce=lambda val: val == 'True',
-                    choices=((True, 'Yes'), (False, 'No')),
-                    widget=forms.RadioSelect
-                )
+        coerce=lambda val: val == 'True',
+        choices=((True, 'Yes'), (False, 'No')),
+        widget=forms.RadioSelect,
+    )
 
     def __init__(self, **kwargs):
         """

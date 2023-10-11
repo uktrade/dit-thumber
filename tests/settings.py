@@ -5,8 +5,8 @@ SECRET_KEY = 'fake-key'
 INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.staticfiles',
-    'tests',
-    'thumber'
+    'tests.apps.TestConfig',
+    'thumber.apps.ThumberConfig',
 ]
 
 # Need a DB (use sqlite in memory) for storing models
@@ -39,3 +39,5 @@ TEMPLATES = [
         'APP_DIRS': True,
     },
 ]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

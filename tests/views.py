@@ -1,5 +1,5 @@
-from django.views.generic import FormView, TemplateView
 from django.urls import reverse_lazy
+from django.views.generic import FormView, TemplateView
 
 from thumber.decorators import thumber_feedback
 
@@ -8,7 +8,6 @@ from .forms import ExampleForm
 
 @thumber_feedback
 class ExampleTemplateView(TemplateView):
-
     def get_template_names(self):
         return ['example.html']
 
@@ -18,7 +17,6 @@ class ExampleTemplateView(TemplateView):
 
 @thumber_feedback
 class ExampleMultipleTemplateView(TemplateView):
-
     def get_template_names(self):
         return ['non_existant.html', 'example.html']
 
@@ -54,12 +52,12 @@ class ExampleOverrideTemplateView(TemplateView):
 
 @thumber_feedback
 class BadExampleTemplateView(TemplateView):
-    template_name = "bad_example.html"
+    template_name = 'bad_example.html'
 
 
 @thumber_feedback
 class ExampleFormView(FormView):
-    template_name = "example.html"
+    template_name = 'example.html'
     form_class = ExampleForm
     success_url = reverse_lazy('thumber_tests:example_form_success')
 

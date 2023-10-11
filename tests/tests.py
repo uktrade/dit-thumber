@@ -1,16 +1,15 @@
 import ast
 
-from django.test import TestCase
-from django.urls import reverse
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.test import TestCase
+from django.urls import reverse
 
-from thumber.models import Feedback
 from thumber import thumber_feedback
+from thumber.models import Feedback
 
 
 class ThumberTests(TestCase):
-
     def test_bad_template_no_form(self):
         # Use a view whose template doesn't specify the thumber_feedback block
         response = self.client.get(reverse('thumber_tests:bad_example'))
@@ -52,7 +51,7 @@ class ThumberTests(TestCase):
         self.assertEquals(response.status_code, 405)
 
     def test_non_js_post_workflow(self):
-        """ Post to a view ensuring that the response is like the normal 'get' response, but with
+        """Post to a view ensuring that the response is like the normal 'get' response, but with
         the thumber success message, and that a populated Feedback model is created.
         """
 
@@ -117,8 +116,7 @@ class ThumberTests(TestCase):
         self.assertEquals(feedback.comment, 'test comment')
 
     def test_view_with_args(self):
-        """Dedicated test to ensure that views with args work
-        """
+        """Dedicated test to ensure that views with args work"""
         view_name = 'thumber_tests:args_example'
         args = ('foobar',)
         path = reverse(view_name, args=args)
@@ -131,7 +129,7 @@ class ThumberTests(TestCase):
         # Post with thumber_token=ajax for a JSON response
         data = {'satisfied': 'True', 'thumber_token': 'ajax'}
         response = self.client.post(path, data, HTTP_REFERER=http_referer)
-        
+
         # Check a Feedback model was created
         self.assertEquals(Feedback.objects.count(), 1)
         feedback = Feedback.objects.all()[0]
@@ -140,8 +138,7 @@ class ThumberTests(TestCase):
         self.assertEquals(view_args[1], {})
 
     def test_view_with_kwargs(self):
-        """Dedicated test to ensure that views with kwargs work, and the kwargs get stored in the model
-        """
+        """Dedicated test to ensure that views with kwargs work, and the kwargs get stored in the model"""
         view_name = 'thumber_tests:kwargs_example'
         kwargs = {'slug': 'foobar'}
         path = reverse(view_name, kwargs=kwargs)
@@ -154,14 +151,14 @@ class ThumberTests(TestCase):
         # Post with thumber_token=ajax for a JSON response
         data = {'satisfied': 'True', 'thumber_token': 'ajax'}
         response = self.client.post(path, data, HTTP_REFERER=http_referer)
-        
+
         # Check a Feedback model was created
         self.assertEquals(Feedback.objects.count(), 1)
         feedback = Feedback.objects.all()[0]
         view_args = ast.literal_eval(feedback.view_args)
         self.assertEquals(view_args[1], kwargs)
         self.assertEquals(view_args[0], ())
-        
+
     def test_basic_template_override(self):
         # Check that the example views (the good ones) correctly get the app-level feedback.html overrides
         response = self.client.get(reverse('thumber_tests:example'))
@@ -185,6 +182,7 @@ class ThumberTests(TestCase):
         as it can only be used to decorate django class-based views
         """
         with self.assertRaises(ImproperlyConfigured):
+
             @thumber_feedback
             def view_function(request):
                 return None
@@ -194,16 +192,15 @@ class ThumberTests(TestCase):
         ImproperlyConfigured should get raised, as it can only be used to decorate django class-based views
         """
         with self.assertRaises(ImproperlyConfigured):
+
             @thumber_feedback
-            class NonClassView():
+            class NonClassView:
                 pass
 
 
 class ThumberAggregationTests(TestCase):
-
     def test_simple_view_averages(self):
-        """ Submit a mix of feedback to a view, and then ask the model manager for average feedback
-        """
+        """Submit a mix of feedback to a view, and then ask the model manager for average feedback"""
 
         view_name = 'thumber_tests:example'
         path = reverse(view_name)
@@ -251,7 +248,7 @@ class ThumberAggregationTests(TestCase):
         self.assertEquals(average_feedback[0]['average'], 0.75)
 
     def test_view_averages_filtered(self):
-        """ Submit feedback to multiple views, and make sure that we can filter the queryset
+        """Submit feedback to multiple views, and make sure that we can filter the queryset
         and still get easy aggregated feedback data
         """
 
@@ -287,7 +284,9 @@ class ThumberAggregationTests(TestCase):
         self.assertEquals(len(average_feedback), 2)
 
         # Get the average of feedbacks for the first view
-        average_feedback1 = Feedback.objects.filter(view_name=view_name1).average_for_views()
+        average_feedback1 = Feedback.objects.filter(
+            view_name=view_name1
+        ).average_for_views()
 
         # The view name should be our app's example_view, and the average should be 50% positive, with 2 votes
         self.assertEquals(average_feedback1[0]['count'], 2)
@@ -295,7 +294,9 @@ class ThumberAggregationTests(TestCase):
         self.assertEquals(average_feedback1[0]['average'], 0.5)
 
         # Get the average of feedbacks for the second view
-        average_feedback2 = Feedback.objects.filter(view_name=view_name2).average_for_views()
+        average_feedback2 = Feedback.objects.filter(
+            view_name=view_name2
+        ).average_for_views()
 
         # The view name should be our app's example_view, and the average should be 100% positive, with 1 vote
         self.assertEquals(average_feedback2[0]['count'], 1)

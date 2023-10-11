@@ -1,20 +1,18 @@
 import os
-from urllib.parse import urlparse
 from itertools import chain
+from urllib.parse import urlparse
 
-from django.urls import resolve
 from django.conf import settings
-from django.http import JsonResponse
-from django.http import HttpResponseNotAllowed
-from django.utils import six
+from django.http import HttpResponseNotAllowed, JsonResponse
 from django.template.loader import get_template, select_template
+from django.urls import resolve
+from six import string_types
 
-from .models import Feedback
 from .forms import ThumberForm
+from .models import Feedback
 
 
-class ThumberView():
-
+class ThumberView:
     _satisfied_wording = 'Was this service useful?'
     _yes_wording = 'Yes, thanks'
     _no_wording = 'Not really'
@@ -33,12 +31,16 @@ class ThumberView():
     def get_template_names(self):
         templates = []
         view_components = self.request.resolver_match.view_name.split(':')
-        templates.append(os.path.join(*chain(['thumber'], view_components, ['feedback.html'])))
+        templates.append(
+            os.path.join(*chain(['thumber'], view_components, ['feedback.html']))
+        )
         if len(view_components) > 1:
             for ind in range(1, len(view_components)):
                 # arbitrary namespaces can be used with a view, so iterate over all options building up paths to
                 # possible templates
-                template = os.path.join(*chain(['thumber'], view_components[:-ind], ['feedback.html']))
+                template = os.path.join(
+                    *chain(['thumber'], view_components[:-ind], ['feedback.html'])
+                )
                 templates.append(template)
 
         # Add in the standard thumber feedback template as the fallback if no custom templates are found
@@ -51,7 +53,10 @@ class ThumberView():
         template_name = self._resolve_template()
         context['parent_template'] = template_name
 
-        if self.request.method == 'POST' and self.request.POST.get('thumber_token', None) == 'sync':
+        if (
+            self.request.method == 'POST'
+            and self.request.POST.get('thumber_token', None) == 'sync'
+        ):
             # feedback has been given via non AJAX request, add the 'thank you' message to the context
             context['thanks_message'] = self.thanks_message
         else:
@@ -61,7 +66,7 @@ class ThumberView():
                 'no_wording': self.no_wording,
                 'comment_wording': self.comment_wording,
                 'comment_placeholder': self.comment_placeholder,
-                'first_option_yes': self.first_option_yes
+                'first_option_yes': self.first_option_yes,
             }
             context['thumber_form'] = ThumberForm(**options)
             context.update(options)
@@ -80,7 +85,7 @@ class ThumberView():
 
         if isinstance(template, (list, tuple)):
             return select_template(template)
-        elif isinstance(template, six.string_types):
+        elif isinstance(template, string_types):
             return get_template(template)
         else:
             return template
@@ -96,7 +101,10 @@ class ThumberView():
                 user_feedback.url = http_referer
                 user_feedback.view_name = self._get_view_from_url(http_referer)
                 user_feedback.session = sessionid
-                user_feedback.view_args = (request.resolver_match.args, request.resolver_match.kwargs)
+                user_feedback.view_args = (
+                    request.resolver_match.args,
+                    request.resolver_match.kwargs,
+                )
             else:
                 # PK given, so this Feedback already exists and just needs the comment adding
                 user_feedback = Feedback.objects.get(pk=pk)
@@ -110,12 +118,16 @@ class ThumberView():
             else:
                 # AJAX submission, inform frontend the frontend the POST was successful, and give the id back so it
                 # can be updated in a separate request
-                return JsonResponse({"success": True, "id": user_feedback.id})
+                return JsonResponse({'success': True, 'id': user_feedback.id})
         else:
             try:
                 return super().post(request, *args, **kwargs)
             except AttributeError:
-                methods = [m.upper() for m in self.http_method_names if hasattr(self, m) and m.upper() != 'POST']
+                methods = [
+                    m.upper()
+                    for m in self.http_method_names
+                    if hasattr(self, m) and m.upper() != 'POST'
+                ]
                 return HttpResponseNotAllowed(methods)
 
     def _get_view_from_url(self, url):

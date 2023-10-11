@@ -1,21 +1,25 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.db.models import Avg, Case, When, Value, Count, IntegerField
+from django.db.models import Avg, Case, Count, IntegerField, Value, When
 
 
 class FeedbackQuerySet(models.QuerySet):
-
     def average_for_views(self):
-        case = Case(When(satisfied=True, then=Value(1)),
-                    When(satisfied=False, then=Value(0)),
-                    output_field=IntegerField())
+        case = Case(
+            When(satisfied=True, then=Value(1)),
+            When(satisfied=False, then=Value(0)),
+            output_field=IntegerField(),
+        )
 
-        return self.values('view_name').annotate(average=Avg(case), count=Count('view_name')).order_by('view_name')
+        return (
+            self.values('view_name')
+            .annotate(average=Avg(case), count=Count('view_name'))
+            .order_by('view_name')
+        )
 
 
 class FeedbackManager(models.Manager):
-
     def get_queryset(self):
         return FeedbackQuerySet(self.model, using=self._db)
 
@@ -41,8 +45,8 @@ class Feedback(models.Model):
 
     def __str__(self):
         tick_cross = '✓' if self.satisfied else '✘'
-        return "{0} - {1}".format(tick_cross, self.created)
+        return '{0} - {1}'.format(tick_cross, self.created)
 
     class Meta:
         ordering = ('-created',)
-        verbose_name_plural = "Feedback"
+        verbose_name_plural = 'Feedback'
