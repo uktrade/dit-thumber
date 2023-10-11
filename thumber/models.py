@@ -13,9 +13,9 @@ class FeedbackQuerySet(models.QuerySet):
         )
 
         return (
-            self.values("view_name")
-            .annotate(average=Avg(case), count=Count("view_name"))
-            .order_by("view_name")
+            self.values('view_name')
+            .annotate(average=Avg(case), count=Count('view_name'))
+            .order_by('view_name')
         )
 
 
@@ -44,9 +44,9 @@ class Feedback(models.Model):
     objects = FeedbackManager()
 
     def __str__(self):
-        tick_cross = "✓" if self.satisfied else "✘"
-        return "{0} - {1}".format(tick_cross, self.created)
+        tick_cross = '✓' if self.satisfied else '✘'
+        return '{0} - {1}'.format(tick_cross, self.created)
 
     class Meta:
-        ordering = ("-created",)
-        verbose_name_plural = "Feedback"
+        ordering = ('-created',)
+        verbose_name_plural = 'Feedback'
