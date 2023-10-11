@@ -6,23 +6,22 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('thumber', '0001_initial'),
+        ("thumber", "0001_initial"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='ContentFeedback',
-            new_name='Feedback',
+            old_name="ContentFeedback",
+            new_name="Feedback",
         ),
         migrations.AlterModelOptions(
-            name='feedback',
-            options={'ordering': ('-created',), 'verbose_name_plural': 'Feedback'},
+            name="feedback",
+            options={"ordering": ("-created",), "verbose_name_plural": "Feedback"},
         ),
         migrations.RenameField(
-            model_name='feedback',
-            old_name='utm_params',
-            new_name='view_args',
+            model_name="feedback",
+            old_name="utm_params",
+            new_name="view_args",
         ),
     ]

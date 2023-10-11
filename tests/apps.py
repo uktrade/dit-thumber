@@ -2,8 +2,7 @@ from django.apps import AppConfig
 
 
 class TestConfig(AppConfig):
-    name = 'tests'
+    name = "tests"
 
     def ready(self):
         return super().ready()
-

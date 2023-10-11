@@ -6,27 +6,33 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='ContentFeedback',
+            name="ContentFeedback",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created', models.DateTimeField(auto_now=True)),
-                ('satisfied', models.BooleanField()),
-                ('comment', models.TextField(blank=True, null=True)),
-                ('url', models.URLField()),
-                ('view_name', models.CharField(max_length=255)),
-                ('utm_params', models.TextField(null=True)),
-                ('session', models.CharField(max_length=64)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now=True)),
+                ("satisfied", models.BooleanField()),
+                ("comment", models.TextField(blank=True, null=True)),
+                ("url", models.URLField()),
+                ("view_name", models.CharField(max_length=255)),
+                ("utm_params", models.TextField(null=True)),
+                ("session", models.CharField(max_length=64)),
             ],
             options={
-                'ordering': ('-created',),
+                "ordering": ("-created",),
             },
         ),
     ]
