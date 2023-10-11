@@ -26,7 +26,7 @@ setup(
     extras_require={
         'test': [
             'setuptools>=45.2.0,<50.0.0',
-            'twine>=3.1.1,<4.0.0',
+            'twine==R4.0.2',
             'wheel>=0.34.2,<1.0.0',
             'black==20.8b1',
             'blacken-docs==1.6.0',
