@@ -1,0 +1,23 @@
+{% extends 'thumber/base.html' %}
+
+{% block thumber_feedback %}
+  {% if thumber_form %}
+    {% block thumber_form %}
+      {% block before_thumber_form %}{% endblock %}
+      <form action="{{ request.get_full_path }}" method="post" class="thumber-form">
+        {% csrf_token %}
+        {% block thumber_form_widgets %}
+          {{ thumber_form.as_p }}
+          <input type="submit" value="{{ submit_wording }}" />
+        {% endblock %}
+      </form>
+      {% block after_thumber_form %}{% endblock %}
+      <span class="thumber-success" style="display: none;">{{ thanks_message | safe }}</span>
+      <span class="thumber-error" style="display: none;">{{ error_message | safe }}</span>
+    {% endblock %}
+  {% else %}
+    {% block non_js_success %}
+      <h3>{{ thanks_message }}</h3>
+    {% endblock %}
+  {% endif %}
+{% endblock %}
